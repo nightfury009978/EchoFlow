@@ -1,1 +1,31 @@
+[
+  {
+    "id": "1",
+    "title": "Starboy",
+    "artist": "The Weeknd ft. Daft Punk",
+    "cover": "https://i.scdn.co/image/ab67616d0000b2734718e2412e28814122b0e4e6",
+    "youtubeId": "34Na4j8AVgA"
+  },
+  {
+    "id": "2",
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "cover": "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b5d71a8bc9",
+    "youtubeId": "4NRXx6U8ABQ"
+  },
+  {
+    "id": "3",
+    "title": "As It Was",
+    "artist": "Harry Styles",
+    "cover": "https://i.scdn.co/image/ab67616d0000b273b46f74097655d0505ce51970",
+    "youtubeId": "H5v3kku4y6Q"
+  },
+  {
+    "id": "4",
+    "title": "Sunflower",
+    "artist": "Post Malone, Swae Lee",
+    "cover": "https://i.scdn.co/image/ab67616d0000b273e2e352d89826aef6dbd5ff8f",
+    "youtubeId": "ApXoWvfEYVU"
+  }
+]
 
