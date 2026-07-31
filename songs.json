@@ -3,29 +3,56 @@
     "id": "1",
     "title": "Starboy",
     "artist": "The Weeknd ft. Daft Punk",
-    "cover": "https://i.scdn.co/image/ab67616d0000b2734718e2412e28814122b0e4e6",
+    "cover": "https://img.youtube.com/vi/34Na4j8AVgA/hqdefault.jpg",
     "youtubeId": "34Na4j8AVgA"
   },
   {
     "id": "2",
     "title": "Blinding Lights",
     "artist": "The Weeknd",
-    "cover": "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b5d71a8bc9",
+    "cover": "https://img.youtube.com/vi/4NRXx6U8ABQ/hqdefault.jpg",
     "youtubeId": "4NRXx6U8ABQ"
   },
   {
     "id": "3",
     "title": "As It Was",
     "artist": "Harry Styles",
-    "cover": "https://i.scdn.co/image/ab67616d0000b273b46f74097655d0505ce51970",
+    "cover": "https://img.youtube.com/vi/H5v3kku4y6Q/hqdefault.jpg",
     "youtubeId": "H5v3kku4y6Q"
   },
   {
     "id": "4",
     "title": "Sunflower",
     "artist": "Post Malone, Swae Lee",
-    "cover": "https://i.scdn.co/image/ab67616d0000b273e2e352d89826aef6dbd5ff8f",
+    "cover": "https://img.youtube.com/vi/ApXoWvfEYVU/hqdefault.jpg",
     "youtubeId": "ApXoWvfEYVU"
+  },
+  {
+    "id": "5",
+    "title": "Stay",
+    "artist": "The Kid LAROI, Justin Bieber",
+    "cover": "https://img.youtube.com/vi/KTZ-y85Erus/hqdefault.jpg",
+    "youtubeId": "KTZ-y85Erus"
+  },
+  {
+    "id": "6",
+    "title": "Levitating",
+    "artist": "Dua Lipa",
+    "cover": "https://img.youtube.com/vi/TUVcZfQe-Kw/hqdefault.jpg",
+    "youtubeId": "TUVcZfQe-Kw"
+  },
+  {
+    "id": "7",
+    "title": "Save Your Tears",
+    "artist": "The Weeknd",
+    "cover": "https://img.youtube.com/vi/XXYlFuWEuKI/hqdefault.jpg",
+    "youtubeId": "XXYlFuWEuKI"
+  },
+  {
+    "id": "8",
+    "title": "Heat Waves",
+    "artist": "Glass Animals",
+    "cover": "https://img.youtube.com/vi/mRD0-GxqHVo/hqdefault.jpg",
+    "youtubeId": "mRD0-GxqHVo"
   }
 ]
-
