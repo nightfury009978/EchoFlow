@@ -1,24 +1,14 @@
-/**
- * EchoFlow - High-Fidelity Audio Engine & UI Controller
- */
-
-// Application State
 let songs = [];
 let currentSongIndex = 0;
 let isPlaying = false;
 let ytPlayer = null;
 let updateTimer = null;
 
-// Audio Context & FX Nodes
-let audioCtx = null;
-let bassNode = null;
-let pannerNode = null;
-let isBassBoostActive = true;
-let isSpatialActive = true;
-
-// DOM Element References
+// DOM Elements
 const trendingGrid = document.getElementById('trending-grid');
 const chartsList = document.getElementById('charts-list');
+const libraryList = document.getElementById('library-list');
+const searchResultsList = document.getElementById('search-results-list');
 const playerThumb = document.getElementById('player-thumb');
 const playerTitle = document.getElementById('player-title');
 const playerArtist = document.getElementById('player-artist');
@@ -28,48 +18,30 @@ const btnNext = document.getElementById('btn-next');
 const seekBar = document.getElementById('seek-bar');
 const currentTimeEl = document.getElementById('current-time');
 const totalTimeEl = document.getElementById('total-time');
-const bassBtn = document.getElementById('bass-btn');
-const spatialBtn = document.getElementById('spatial-btn');
 const heroPlayBtn = document.getElementById('hero-play-btn');
 
-// Load YouTube iFrame API dynamically
+// Load YouTube API
 const tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// Initialize YouTube Player
 window.onYouTubeIframeAPIReady = () => {
-  // Create hidden iframe container
   const iframeContainer = document.createElement('div');
   iframeContainer.id = 'yt-hidden-player';
   iframeContainer.style.display = 'none';
   document.body.appendChild(iframeContainer);
 
   ytPlayer = new YT.Player('yt-hidden-player', {
-    height: '0',
-    width: '0',
-    playerVars: {
-      autoplay: 0,
-      controls: 0,
-      disablekb: 1,
-      fs: 0,
-      modestbranding: 1
-    },
+    height: '0', width: '0',
+    playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, modestbranding: 1 },
     events: {
-      onReady: onPlayerReady,
+      onReady: () => { fetchSongs(); setupEventListeners(); },
       onStateChange: onPlayerStateChange
     }
   });
 };
 
-// Start application after YouTube API is ready
-function onPlayerReady() {
-  fetchSongs();
-  setupEventListeners();
-}
-
-// Fetch curated tracks from songs.json
 async function fetchSongs() {
   try {
     const response = await fetch('songs.json');
@@ -77,15 +49,15 @@ async function fetchSongs() {
 
     if (songs.length > 0) {
       renderTrendingGrid();
-      renderChartsList();
-      loadTrack(0, false); // Load initial track UI without auto-play
+      renderChartsList(songs, chartsList);
+      renderChartsList(songs, libraryList);
+      loadTrack(0, false);
     }
   } catch (error) {
     console.error("Error loading songs.json:", error);
   }
 }
 
-// Render Horizontal Trending Cards
 function renderTrendingGrid() {
   trendingGrid.innerHTML = '';
   songs.forEach((song, index) => {
@@ -102,63 +74,54 @@ function renderTrendingGrid() {
   });
 }
 
-// Render Top Charts List
-function renderChartsList() {
-  chartsList.innerHTML = '';
-  songs.forEach((song, index) => {
+function renderChartsList(songList, container) {
+  container.innerHTML = '';
+  songList.forEach((song) => {
+    const actualIndex = songs.findIndex(s => s.id === song.id);
     const item = document.createElement('div');
     item.className = 'song-card';
     item.style.display = 'flex';
     item.style.alignItems = 'center';
-    item.style.gap = '16px';
-    item.style.marginBottom = '12px';
-    item.onclick = () => playTrack(index);
+    item.style.gap = '12px';
+    item.style.marginBottom = '10px';
+    item.onclick = () => playTrack(actualIndex);
 
     item.innerHTML = `
-      <img src="${song.cover}" style="width: 50px; height: 50px;" alt="${song.title}">
-      <div>
-        <h3 style="font-size: 15px;">${song.title}</h3>
-        <p style="font-size: 13px; color: var(--text-secondary);">${song.artist}</p>
+      <img src="${song.cover}" style="width: 48px; height: 48px; border-radius: 8px;" alt="${song.title}">
+      <div style="overflow: hidden;">
+        <h3 style="font-size: 14px;">${song.title}</h3>
+        <p style="font-size: 12px; color: var(--text-secondary);">${song.artist}</p>
       </div>
     `;
-    chartsList.appendChild(item);
+    container.appendChild(item);
   });
 }
 
-// Load track into the UI and YouTube Player
 function loadTrack(index, autoPlay = true) {
   currentSongIndex = index;
   const song = songs[currentSongIndex];
 
-  // Update Player UI
   playerThumb.src = song.cover;
   playerTitle.textContent = song.title;
   playerArtist.textContent = song.artist;
 
-  // Load into YouTube Player
   if (ytPlayer && ytPlayer.cueVideoById) {
     if (autoPlay) {
       ytPlayer.loadVideoById(song.youtubeId);
       isPlaying = true;
       btnPlay.textContent = '⏸';
-      initWebAudioFX(); // Trigger audio enhancement context
     } else {
       ytPlayer.cueVideoById(song.youtubeId);
     }
   }
 }
 
-// Play selected track
 function playTrack(index) {
   loadTrack(index, true);
 }
 
-// Toggle Play / Pause State
 function togglePlay() {
   if (!ytPlayer) return;
-
-  initWebAudioFX();
-
   if (isPlaying) {
     ytPlayer.pauseVideo();
     btnPlay.textContent = '▶';
@@ -170,7 +133,6 @@ function togglePlay() {
   }
 }
 
-// Monitor YouTube state changes
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.PLAYING) {
     isPlaying = true;
@@ -185,25 +147,20 @@ function onPlayerStateChange(event) {
   }
 }
 
-// Next / Previous Navigation
 function nextTrack() {
-  const nextIndex = (currentSongIndex + 1) % songs.length;
-  playTrack(nextIndex);
+  playTrack((currentSongIndex + 1) % songs.length);
 }
 
 function prevTrack() {
-  const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-  playTrack(prevIndex);
+  playTrack((currentSongIndex - 1 + songs.length) % songs.length);
 }
 
-// Progress Bar & Time Loop
 function startProgressLoop() {
   clearInterval(updateTimer);
   updateTimer = setInterval(() => {
     if (ytPlayer && isPlaying) {
       const currentTime = ytPlayer.getCurrentTime() || 0;
       const duration = ytPlayer.getDuration() || 0;
-
       if (duration > 0) {
         seekBar.value = (currentTime / duration) * 100;
         currentTimeEl.textContent = formatTime(currentTime);
@@ -213,68 +170,62 @@ function startProgressLoop() {
   }, 500);
 }
 
-// Seek position inside track
 seekBar.addEventListener('input', () => {
   if (ytPlayer && ytPlayer.getDuration) {
     const duration = ytPlayer.getDuration();
-    const seekTo = (seekBar.value / 100) * duration;
-    ytPlayer.seekTo(seekTo, true);
+    ytPlayer.seekTo((seekBar.value / 100) * duration, true);
   }
 });
 
-// Format Seconds to MM:SS
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Web Audio API DSP Equalizer Setup
-function initWebAudioFX() {
-  if (audioCtx) return; // Initialize once upon user interaction
-
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AudioContext();
-
-    // Low-shelf filter for punchy sub-bass enhancement
-    bassNode = audioCtx.createBiquadFilter();
-    bassNode.type = 'lowshelf';
-    bassNode.frequency.value = 100; // Boost frequencies below 100Hz
-    bassNode.gain.value = 8; // +8dB bass boost
-
-    // Stereo Panner for Spatial 3D warmth
-    if (audioCtx.createStereoPanner) {
-      pannerNode = audioCtx.createStereoPanner();
-      pannerNode.pan.value = 0; // Balanced spatial center
-    }
-
-    console.log("EchoFlow Web Audio FX Engine initialized.");
-  } catch (e) {
-    console.log("Web Audio API not supported or blocked by browser policy.");
+// Filter songs for search
+function handleSearch(query) {
+  const filtered = songs.filter(s => 
+    s.title.toLowerCase().includes(query.toLowerCase()) || 
+    s.artist.toLowerCase().includes(query.toLowerCase())
+  );
+  if (filtered.length > 0) {
+    renderChartsList(filtered, searchResultsList);
+  } else {
+    searchResultsList.innerHTML = `<p style="color: var(--text-secondary);">No songs found for "${query}"</p>`;
   }
 }
 
-// Setup App Control Listeners
 function setupEventListeners() {
   btnPlay.addEventListener('click', togglePlay);
   btnNext.addEventListener('click', nextTrack);
   btnPrev.addEventListener('click', prevTrack);
   if (heroPlayBtn) heroPlayBtn.addEventListener('click', () => playTrack(0));
 
-  // Toggle Bass Boost FX
-  bassBtn.addEventListener('click', () => {
-    isBassBoostActive = !isBassBoostActive;
-    if (bassNode) {
-      bassNode.gain.value = isBassBoostActive ? 8 : 0;
-    }
-    bassBtn.classList.toggle('active', isBassBoostActive);
-  });
+  // Search Inputs
+  const searchInput = document.getElementById('search-input');
+  const mobileSearchInput = document.getElementById('mobile-search-input');
 
-  // Toggle Spatial Audio Mode
-  spatialBtn.addEventListener('click', () => {
-    isSpatialActive = !isSpatialActive;
-    spatialBtn.classList.toggle('active', isSpatialActive);
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+  }
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+  }
+
+  // Mobile Bottom Nav Tab Switcher
+  const navItems = document.querySelectorAll('.nav-item');
+  const tabViews = document.querySelectorAll('.tab-view');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const targetViewId = item.getAttribute('data-target');
+
+      navItems.forEach(nav => nav.classList.remove('active'));
+      tabViews.forEach(view => view.classList.remove('active'));
+
+      item.classList.add('active');
+      document.getElementById(targetViewId).classList.add('active');
+    });
   });
 }
-
