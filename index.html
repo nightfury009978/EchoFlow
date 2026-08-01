@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>EchoFlow - Next-Gen Audio</title>
+  <title>EchoFlow - Feel the Music</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,71 +12,129 @@
 <body>
 
   <div class="app-shell">
-    <!-- Top Header with Brand and Search -->
+    <!-- Top Header with Brand and Hamburger Menu -->
     <header class="top-header">
       <div class="brand">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">EchoFlow</span>
       </div>
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" placeholder="Search song title or artist..." />
-      </div>
+      <button class="menu-btn" id="menu-toggle">☰</button>
     </header>
 
-    <!-- Main Viewport containing Tab Views -->
+    <!-- Side Navigation Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="side-drawer" id="side-drawer">
+      <div class="drawer-header">
+        <h2>Menu</h2>
+        <button id="close-drawer">✕</button>
+      </div>
+      <ul class="drawer-links">
+        <li id="menu-home">🏠 Home</li>
+        <li id="menu-settings">⚙️ Audio Settings</li>
+        <li id="menu-about">ℹ️ About EchoFlow</li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Area -->
     <main class="main-viewport">
 
-      <!-- Home View -->
+      <!-- Home Tab View -->
       <div id="view-home" class="tab-view active">
         <section class="hero-card">
           <div class="hero-content">
             <span class="badge">Featured Experience</span>
             <h1 id="hero-title">Starboy</h1>
             <p id="hero-artist">The Weeknd ft. Daft Punk</p>
-            <button class="play-hero-btn" id="hero-play-btn">
-              <span>▶</span> Play Now
-            </button>
+            <button class="play-hero-btn" id="hero-play-btn">▶ Play Now</button>
           </div>
         </section>
 
         <section class="section-container">
-          <div class="section-header">
-            <h2>Trending Now</h2>
+          <div class="section-header"><h2>Recently Played</h2></div>
+          <div class="horizontal-scroll" id="recently-played-grid">
+            <p style="color: var(--text-secondary); font-size: 13px;">No recent songs played yet</p>
           </div>
+        </section>
+
+        <section class="section-container">
+          <div class="section-header"><h2>Trending Worldwide</h2></div>
           <div class="horizontal-scroll" id="trending-grid"></div>
         </section>
 
         <section class="section-container">
-          <div class="section-header">
-            <h2>Top Charts</h2>
-          </div>
+          <div class="section-header"><h2>Top Charts</h2></div>
           <div class="track-list" id="charts-list"></div>
         </section>
       </div>
 
-      <!-- Search View (For Mobile & Desktop) -->
+      <!-- Search Tab View (Single Clean Search Bar) -->
       <div id="view-search" class="tab-view">
         <h2 style="margin-bottom: 16px;">Search Songs</h2>
-        <div class="mobile-search-box">
-          <input type="text" id="mobile-search-input" placeholder="Type a song or artist name..." />
+        <div class="single-search-box">
+          <span style="font-size: 18px;">🔍</span>
+          <input type="text" id="search-input" placeholder="Search by song title, artist, or language..." />
         </div>
-        <div class="track-list" id="search-results-list" style="margin-top: 16px;">
-          <p style="color: var(--text-secondary);">Type above to filter songs...</p>
+        <div class="track-list" id="search-results-list" style="margin-top: 20px;">
+          <p style="color: var(--text-secondary);">Start typing to find songs across the globe...</p>
         </div>
       </div>
 
-      <!-- Library View -->
+      <!-- Library Tab View (Playlists Only) -->
       <div id="view-library" class="tab-view">
-        <h2 style="margin-bottom: 16px;">Your Library</h2>
-        <div class="track-list" id="library-list"></div>
+        <h2 style="margin-bottom: 16px;">Playlists</h2>
+        <div class="playlist-grid">
+          <div class="playlist-card">
+            <div class="playlist-icon">❤️</div>
+            <h3>Liked Songs</h3>
+            <p>Auto-Saved</p>
+          </div>
+          <div class="playlist-card">
+            <div class="playlist-icon">☕</div>
+            <h3>Chill Vibes</h3>
+            <p>Lo-Fi & Acoustic</p>
+          </div>
+          <div class="playlist-card">
+            <div class="playlist-icon">⚡</div>
+            <h3>Workout Beats</h3>
+            <p>High Energy</p>
+          </div>
+          <div class="playlist-card">
+            <div class="playlist-icon">🌐</div>
+            <h3>Global Hits</h3>
+            <p>Multi-Language</p>
+          </div>
+        </div>
       </div>
 
     </main>
 
-    <!-- Bottom Player -->
+    <!-- Full-Screen Now Playing View (Modal Popup) -->
+    <div id="now-playing-modal" class="full-screen-modal">
+      <button id="close-modal-btn" class="close-modal">✕</button>
+      <div class="modal-content">
+        <img id="modal-thumb" src="" alt="Album Cover" />
+        <h1 id="modal-title">Song Title</h1>
+        <p id="modal-artist">Artist Name</p>
+
+        <div class="modal-progress">
+          <input type="range" id="modal-seek-bar" value="0" max="100" />
+          <div class="time-stamps">
+            <span id="modal-current-time">0:00</span>
+            <span id="modal-total-time">0:00</span>
+          </div>
+        </div>
+
+        <div class="modal-controls">
+          <button id="modal-btn-prev">⏮</button>
+          <button id="modal-btn-play" class="big-play">▶</button>
+          <button id="modal-btn-next">⏭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Sticky Mini Player -->
     <footer class="player-bar">
-      <div class="player-track-details">
+      <div class="player-track-details" id="open-player-modal">
         <img id="player-thumb" src="https://img.youtube.com/vi/34Na4j8AVgA/hqdefault.jpg" alt="Cover" />
         <div class="track-text">
           <div class="track-title" id="player-title">Select a Song</div>
@@ -98,7 +156,7 @@
       </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation Bar -->
+    <!-- Mobile Navigation Bar -->
     <nav class="mobile-nav">
       <button class="nav-item active" data-target="view-home">
         <span class="nav-icon">🏠</span>
